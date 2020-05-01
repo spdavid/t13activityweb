@@ -85,6 +85,7 @@ export class Activity implements IdValue {
     completed: boolean | null = null;
     bookable: boolean = false;
     cancelled: boolean = false;
+    confirmed: boolean = false;
 
     @Type(() => ActivityType)
     type: ActivityType | null = null;

@@ -18,6 +18,14 @@ export const EventActivitiesTable = (props: { event?: T13Event }) => {
     //const history = useHistory();
     const user = useContext(userContext);
     const pageSize = 8;
+    const [currentUserIsCoordinator, setCurrentUserIsCoordinator] = useState(false);
+
+    React.useEffect(() => {
+        var corrdinatorCheck = props.event?.coordinators.filter(c => c.id === user.memberId);
+        if (corrdinatorCheck && corrdinatorCheck.length > 0) {
+            setCurrentUserIsCoordinator(true);
+        }
+    }, [props.event, user.memberId]);
 
     const handleLoaded = useCallback((as: PagedActivities) => {
         if (event) {
@@ -53,13 +61,13 @@ export const EventActivitiesTable = (props: { event?: T13Event }) => {
 
         const weight = (activity.weight === 0)
             ? <HoverTooltip tooltip="Denna uppgift räknas inte mot guldkortet">
-                <span>X</span>    
+                <span>X</span>
             </HoverTooltip>
             : (activity.weight > 1) ?
                 <HoverTooltip tooltip="Denna uppgift räknas som flera">
                     <span className='weight'>{activity.weight}</span>
                 </HoverTooltip>
-            : null;
+                : null;
 
         return (
             <tr key={activity.id} className={'linked ' + className}>
@@ -73,6 +81,9 @@ export const EventActivitiesTable = (props: { event?: T13Event }) => {
                     {weight ? ' ' : null}
                     <Reimbursements model={activity.type} /></td>
                 <td>{assigned}</td>
+                {currentUserIsCoordinator &&
+                    <td>{activity.confirmed ? (<>Ja</>) : (<>Nej</>)}</td>
+                }
             </tr>
         )
     }
@@ -116,6 +127,9 @@ export const EventActivitiesTable = (props: { event?: T13Event }) => {
                         <th>Tid</th>
                         <th>Övrigt</th>
                         <th>Tilldelad</th>
+                        {currentUserIsCoordinator &&
+                            <th>Påminnelse bekräftad</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
