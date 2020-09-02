@@ -61,7 +61,7 @@ By default, uses the [SQLite](https://www.sqlite.org/) db during development, wh
 
     ```bash
     virtualenv env
-    source env/scripts/activate
+    source env/bin/activate
     ```
 
 * Install required packages (into the virtual environment)  
@@ -75,9 +75,16 @@ python -m pip install -r requirements.txt
 
 ```bash
 python manage.py migrate
-cat fixtures/2020_testdata.json | python manage.py loaddata - --format= json
+cat fixtures/2020_testdata.json | python manage.py loaddata - --format=json
 python manage.py createsuperuser
 ```
+
+
+* Meeds this for images and such
+```bash
+python manage.py collectstatic
+```
+
 
 * Start development server
 
