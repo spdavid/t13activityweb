@@ -1,0 +1,45 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '10.x'
+        
+    - name: build frontEnd
+      working-directory: './frontend'
+      run: |
+        npm install
+        npm build
+         
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install pip
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt
+        pip install unittest-xml-reporting
+    - name: django collectstatic
+      run: |
+        python manage.py collectstatic
+    - name: python tests
+      run: |
+        python manage.py test --testrunner xmlrunner.extra.djangotestrunner.XMLTestRunner --no-input --debug-mode
+
